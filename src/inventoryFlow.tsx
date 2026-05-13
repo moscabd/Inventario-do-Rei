@@ -42,12 +42,19 @@ export type InventoryBackup = {
   files: Array<Record<string, unknown>>;
 };
 
-export const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY,
-);
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.warn('⚠️ Supabase URL ou Anon Key não encontradas no arquivo .env');
+}
+
+export const supabase = (supabaseUrl && supabaseAnonKey) 
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null as unknown as SupabaseClient;
 
 export async function listActiveItems(client: SupabaseClient = supabase) {
+  if (!client) throw new Error('Supabase não configurado. Verifique o arquivo .env');
   const { data, error } = await client
     .from('items_with_last_change')
     .select('*')

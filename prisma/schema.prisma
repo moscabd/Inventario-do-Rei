@@ -1,0 +1,292 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 1. Gestão de Usuários e Permissões
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String
+  password      String
+  role          UserRole  @default(VIEWER)
+  companyId     String?
+  company       Company?  @relation(fields: [companyId], references: [id])
+  
+  // Relações
+  movements     Movement[] @relation("PerformedBy")
+  audits        Audit[]
+  uploads       Document[]
+  notifications Notification[]
+  sessions      Session[]
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+  AUDITOR
+  TECHNICIAN
+  COMMON_USER
+  VIEWER
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+// 2. Hierarquia Organizacional
+model Company {
+  id          String   @id @default(cuid())
+  name        String
+  document    String   @unique // CNPJ
+  branches    Branch[]
+  users       User[]
+  assets      Asset[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Branch {
+  id        String   @id @default(cuid())
+  name      String
+  companyId String
+  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  sectors   Sector[]
+  assets    Asset[]
+  createdAt DateTime @default(now())
+}
+
+model Sector {
+  id        String   @id @default(cuid())
+  name      String
+  branchId  String
+  branch    Branch   @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  assets    Asset[]
+  createdAt DateTime @default(now())
+}
+
+// 3. Gestão Patrimonial
+model Asset {
+  id                String      @id @default(cuid())
+  tagNumber         String      @unique // Número do patrimônio
+  name              String
+  description       String?
+  category          String
+  subcategory       String?
+  brand             String?
+  model             String?
+  serialNumber      String?     @unique
+  internalCode      String?
+  barcode           String?
+  qrCode            String?     @unique
+  rfid              String?
+  
+  status            AssetStatus @default(ACTIVE)
+  
+  // Financeiro
+  acquisitionValue  Decimal?    @db.Decimal(14, 2)
+  currentValue      Decimal?    @db.Decimal(14, 2)
+  acquisitionDate   DateTime?
+  invoiceNumber     String?
+  warrantyDate      DateTime?
+  usefulLifeMonths  Int?
+  
+  // Localização e Responsáveis
+  companyId         String
+  company           Company     @relation(fields: [companyId], references: [id])
+  branchId          String?
+  branch            Branch?     @relation(fields: [branchId], references: [id])
+  sectorId          String?
+  sector            Sector?     @relation(fields: [sectorId], references: [id])
+  
+  responsibleName   String?
+  linkedUserId      String?
+  physicalLocation  String?
+  latitude          Float?
+  longitude         Float?
+  
+  // Relações
+  history           AssetHistory[]
+  movements         Movement[]
+  documents         Document[]
+  checklists        AuditChecklist[]
+  
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+}
+
+enum AssetStatus {
+  ACTIVE
+  IN_USE
+  MAINTENANCE
+  RETIRED
+  MISSING
+  RESERVE
+}
+
+// 4. Histórico e Auditoria
+model AssetHistory {
+  id            String   @id @default(cuid())
+  assetId       String
+  asset         Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  snapshot      Json
+  changeSummary String?
+  changedBy     String?
+  createdAt     DateTime @default(now())
+}
+
+model Movement {
+  id            String         @id @default(cuid())
+  assetId       String
+  asset         Asset          @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  type          MovementType
+  originId      String?
+  destinationId String?
+  reason        String?
+  evidencePath  String?
+  
+  performedById String
+  performedBy   User           @relation("PerformedBy", fields: [performedById], references: [id])
+  
+  createdAt     DateTime       @default(now())
+}
+
+enum MovementType {
+  TRANSFER_SECTOR
+  TRANSFER_BRANCH
+  LOAN
+  RETURN
+  DISPOSAL
+  RESPONSIBLE_CHANGE
+}
+
+// 5. Inventário e Auditoria
+model Audit {
+  id            String          @id @default(cuid())
+  name          String
+  type          AuditType
+  status        AuditStatus     @default(PENDING)
+  auditorId     String
+  auditor       User            @relation(fields: [auditorId], references: [id])
+  checklists    AuditChecklist[]
+  createdAt     DateTime        @default(now())
+  finishedAt    DateTime?
+}
+
+enum AuditType {
+  SECTOR
+  COMPANY
+  ANNUAL
+  CYCLIC
+}
+
+enum AuditStatus {
+  PENDING
+  IN_PROGRESS
+  FINISHED
+  CONCLUDED_WITH_DIVERGENCE
+}
+
+model AuditChecklist {
+  id            String   @id @default(cuid())
+  auditId       String
+  audit         Audit    @relation(fields: [auditId], references: [id], onDelete: Cascade)
+  assetId       String
+  asset         Asset    @relation(fields: [assetId], references: [id])
+  status        CheckStatus
+  observations  String?
+  createdAt     DateTime @default(now())
+}
+
+enum CheckStatus {
+  FOUND
+  NOT_FOUND
+  EXCESSIVE
+  DIVERGENT
+}
+
+// 6. Gestão de Documentos Profissional
+model Document {
+  id            String   @id @default(cuid())
+  assetId       String?
+  asset         Asset?   @relation(fields: [assetId], references: [id])
+  
+  name          String
+  originalName  String
+  storagePath   String   @unique
+  mimeType      String
+  size          BigInt
+  type          DocType  @default(PHOTO)
+  
+  // OCR e Busca
+  ocrText       String?
+  
+  uploadedById  String
+  uploadedBy    User     @relation(fields: [uploadedById], references: [id])
+  
+  isFavorite    Boolean  @default(false)
+  isDeleted     Boolean  @default(false)
+  tags          String[]
+  version       Int      @default(1)
+  
+  createdAt     DateTime @default(now())
+}
+
+enum DocType {
+  INVOICE
+  MANUAL
+  WARRANTY
+  CONTRACT
+  SERVICE_ORDER
+  TECHNICAL_REPORT
+  PHOTO
+  RESPONSIBILITY_TERM
+  CHECKLIST
+  REPORT
+}
+
+// 7. Notificações
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  type      NotifyType
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+enum NotifyType {
+  WARRANTY_EXPIRING
+  MAINTENANCE_DUE
+  AUDIT_ALERT
+  DIVERGENCE_FOUND
+  SYSTEM_ALERT
+}
+
+// 8. Logs de Auditoria do Sistema
+model AuditLog {
+  id        String   @id @default(cuid())
+  action    String
+  module    String
+  userId    String?
+  details   Json?
+  ip        String?
+  createdAt DateTime @default(now())
+}
