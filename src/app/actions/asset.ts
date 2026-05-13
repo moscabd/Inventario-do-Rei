@@ -70,8 +70,12 @@ export async function importAssets(assetsData: any[]) {
     tagNumber: item.tagNumber || `REI-IMPORT-${Math.floor(Math.random()*10000)}`,
     name: item.name || "Item Importado",
     category: item.category || "Geral",
-    status: "ACTIVE" as any,
-    currentValue: item.currentValue ? parseFloat(item.currentValue) : null,
+    brand: item.brand || null,
+    model: item.model || null,
+    serialNumber: item.serialNumber || null,
+    description: item.description || null,
+    status: (item.status as any) || "ACTIVE",
+    currentValue: item.currentValue ? parseFloat(item.currentValue.replace(',', '.')) : null,
     companyId
   }));
 

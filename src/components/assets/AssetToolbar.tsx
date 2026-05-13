@@ -51,15 +51,19 @@ export default function AssetToolbar({ assets }: { assets: any[] }) {
     const text = await file.text();
     const lines = text.split("\n").filter(l => l.trim().length > 0);
     
-    // Assumimos que a primeira linha é o header. 
-    // Mapeamento: [0] Código, [1] Nome, [2] Categoria, [3] Status, [4] Valor
+    // Novo Padrão: Código;Nome;Categoria;Marca;Modelo;Série;Status;Valor;Descrição
     const dataToImport = lines.slice(1).map(line => {
       const cols = line.split(";");
       return {
         tagNumber: cols[0]?.trim(),
         name: cols[1]?.trim(),
         category: cols[2]?.trim(),
-        currentValue: cols[4]?.trim()
+        brand: cols[3]?.trim(),
+        model: cols[4]?.trim(),
+        serialNumber: cols[5]?.trim(),
+        status: cols[6]?.trim() || "ACTIVE",
+        currentValue: cols[7]?.trim(),
+        description: cols[8]?.trim()
       };
     });
 
@@ -173,9 +177,28 @@ export default function AssetToolbar({ assets }: { assets: any[] }) {
               </button>
             </div>
             <div className="p-6 space-y-6">
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Faça o upload de uma planilha CSV separada por ponto-e-vírgula (;) com as colunas: <strong className="text-secondary">Código; Nome; Categoria; Status; Valor</strong>.
-              </p>
+              <div className="bg-muted/30 p-4 rounded-xl border border-border">
+                <p className="text-sm font-bold text-foreground mb-2">Para garantir que funcione perfeitamente:</p>
+                <p className="text-xs text-muted-foreground leading-relaxed mb-4">
+                  Sua planilha deve ser um arquivo CSV (separado por ponto-e-vírgula) seguindo o nosso padrão exato de colunas (Código, Nome, Categoria, Marca, etc).
+                </p>
+                <button 
+                  onClick={() => {
+                    const template = "Código;Nome;Categoria;Marca;Modelo;Série;Status;Valor;Descrição\nREI-001;Notebook Dell;TI;Dell;Latitude 5420;SN123456;ACTIVE;4500.00;Equipamento para desenvolvedores";
+                    const blob = new Blob([template], { type: "text/csv;charset=utf-8;" });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement("a");
+                    link.href = url;
+                    link.setAttribute("download", `Planilha_Padrao_Rei.csv`);
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                  }}
+                  className="w-full py-2 bg-secondary/10 text-secondary border border-secondary/20 hover:bg-secondary/20 font-bold text-xs rounded-lg transition-colors"
+                >
+                  <Download className="w-3 h-3 inline-block mr-1" /> Baixar Planilha Padrão
+                </button>
+              </div>
               
               <input 
                 type="file" 
