@@ -31,8 +31,8 @@ export default function AssetsPage() {
       <div className="space-y-8">
         <div className="flex justify-between items-end border-b-4 border-secondary/20 pb-8">
           <div>
-            <h2 className="text-4xl font-black text-primary tracking-tighter">Acervo de Patrimônio</h2>
-            <p className="text-primary/60 font-medium mt-2 italic text-lg text-primary">Controle absoluto de todos os bens do Reino.</p>
+            <h2 className="text-4xl font-black text-white tracking-tighter">Acervo de Patrimônio</h2>
+            <p className="text-white/60 font-medium mt-2 italic text-lg">Controle absoluto de todos os bens do Reino.</p>
           </div>
           <div className="flex gap-4">
             <button className="flex items-center gap-2 px-6 py-3 border-2 border-secondary text-secondary rounded-2xl text-sm font-black uppercase hover:bg-secondary hover:text-primary transition-all shadow-lg">
@@ -45,13 +45,13 @@ export default function AssetsPage() {
         </div>
 
         {/* Professional Search & Filter - Royal Style */}
-        <div className="bg-white border-2 border-secondary/20 p-6 rounded-3xl flex items-center gap-6 shadow-md">
+        <div className="bg-card border-2 border-secondary/20 p-6 rounded-3xl flex items-center gap-6 shadow-md">
           <div className="relative flex-1 group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-secondary group-focus-within:text-primary" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-secondary group-focus-within:text-white" />
             <input 
               type="text" 
               placeholder="Pesquisar por nome, código ou categoria real..." 
-              className="w-full bg-secondary/5 border-none rounded-2xl py-4 pl-12 text-sm font-bold text-primary focus:ring-2 focus:ring-primary/20 transition-all"
+              className="w-full bg-secondary/5 border-none rounded-2xl py-4 pl-12 text-sm font-bold text-white focus:ring-2 focus:ring-primary/20 transition-all"
             />
           </div>
           <button className="flex items-center gap-2 px-6 py-4 bg-secondary/10 text-secondary rounded-2xl text-sm font-black uppercase hover:bg-secondary hover:text-primary transition-all">
@@ -60,7 +60,7 @@ export default function AssetsPage() {
         </div>
 
         {/* Assets Table - Clean & Royal */}
-        <div className="bg-white border-2 border-secondary/10 rounded-[2.5rem] overflow-hidden shadow-2xl">
+        <div className="bg-card border-2 border-secondary/10 rounded-[2.5rem] overflow-hidden shadow-2xl">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-primary text-white border-b-4 border-secondary">
@@ -75,20 +75,20 @@ export default function AssetsPage() {
               {assets.map((asset) => (
                 <tr key={asset.id} className="hover:bg-secondary/5 transition-colors group cursor-pointer">
                   <td className="p-6">
-                    <span className="font-black text-sm text-primary bg-secondary/20 border border-secondary px-3 py-1.5 rounded-lg shadow-sm">{asset.tag}</span>
+                    <span className="font-black text-sm text-white bg-secondary/20 border border-secondary px-3 py-1.5 rounded-lg shadow-sm">{asset.tag}</span>
                   </td>
                   <td className="p-6">
                     <div className="flex flex-col">
-                      <span className="text-lg font-black text-primary group-hover:text-secondary transition-colors">{asset.name}</span>
-                      <span className="text-[10px] text-primary/40 font-bold uppercase tracking-widest mt-1">{asset.category}</span>
+                      <span className="text-lg font-black text-white group-hover:text-secondary transition-colors">{asset.name}</span>
+                      <span className="text-[10px] text-white/40 font-bold uppercase tracking-widest mt-1">{asset.category}</span>
                     </div>
                   </td>
                   <td className="p-6 text-center">
-                    <span className={`text-[10px] font-black uppercase px-4 py-2 rounded-xl border-2 ${statusStyles[asset.status] || "bg-secondary/10 text-primary border-secondary/20"}`}>
+                    <span className={`text-[10px] font-black uppercase px-4 py-2 rounded-xl border-2 ${statusStyles[asset.status] || "bg-secondary/10 text-white border-secondary/20"}`}>
                       {asset.status}
                     </span>
                   </td>
-                  <td className="p-6 text-sm font-black text-primary">
+                  <td className="p-6 text-sm font-black text-white">
                     {asset.value}
                   </td>
                   <td className="p-6">

@@ -76,14 +76,14 @@ export default function Shell({ children }: { children: React.ReactNode }) {
       {/* Main Content */}
       <main className="flex-1 flex flex-col overflow-hidden">
         {/* Topbar */}
-        <header className="h-20 border-b border-secondary/20 bg-white/50 backdrop-blur-md flex items-center justify-between px-10">
+        <header className="h-20 border-b border-secondary/20 bg-card/50 backdrop-blur-md flex items-center justify-between px-10">
           <div className="flex items-center gap-4 flex-1 max-w-2xl">
             <div className="relative w-full group">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-secondary transition-colors group-focus-within:text-primary" />
               <input 
                 type="text" 
                 placeholder="Busca em todo o Reino..." 
-                className="w-full bg-secondary/5 border-2 border-secondary/20 rounded-full py-3 pl-12 pr-6 text-sm font-medium focus:outline-none focus:border-primary focus:bg-white transition-all shadow-inner"
+                className="w-full bg-secondary/5 border-2 border-secondary/20 rounded-full py-3 pl-12 pr-6 text-sm font-medium focus:outline-none focus:border-primary focus:bg-background transition-all shadow-inner text-white"
               />
             </div>
           </div>
