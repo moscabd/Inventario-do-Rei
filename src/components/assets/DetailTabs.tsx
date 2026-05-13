@@ -15,8 +15,38 @@ export default function DetailTabs({ asset }: { asset: any }) {
     setMounted(true);
   }, []);
 
+  const statusLabels: Record<string, string> = {
+    "ACTIVE": "Ativo",
+    "IN_USE": "Em Uso",
+    "MAINTENANCE": "Em Manutenção",
+  };
+
   return (
     <>
+      {/* Header Interativo */}
+      <div className="animate-in flex flex-col sm:flex-row justify-between items-start gap-4 mb-6">
+        <div className="flex items-center gap-4">
+          <a href="/assets" className="p-2.5 bg-card border border-border hover:bg-secondary/10 hover:border-secondary/20 rounded-xl transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-muted-foreground"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+          </a>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-xs font-bold text-secondary bg-secondary/10 border border-secondary/15 px-2.5 py-1 rounded-md">{asset.tagNumber}</span>
+              <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/15 border border-emerald-500/20 px-2.5 py-1 rounded-full uppercase">{statusLabels[asset.status] || asset.status}</span>
+            </div>
+            <h2 className="text-xl lg:text-2xl font-black text-foreground mt-2">{asset.name}</h2>
+          </div>
+        </div>
+        <div className="flex gap-3 ml-12 sm:ml-0">
+          <button onClick={() => setIsEditModalOpen(true)} className="flex items-center gap-2 px-4 py-2 border border-secondary/30 text-secondary rounded-xl text-sm font-semibold hover:bg-secondary/10 transition-all">
+            <Edit3 className="w-4 h-4" /> Editar
+          </button>
+          <button className="flex items-center gap-2 px-4 py-2 bg-secondary text-background rounded-xl text-sm font-bold hover:bg-secondary/90 transition-all shadow-lg shadow-secondary/20">
+            <ShieldCheck className="w-4 h-4" /> Favoritar
+          </button>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           <div className="animate-in animate-in-delay-1 flex gap-6 border-b border-border overflow-x-auto">
