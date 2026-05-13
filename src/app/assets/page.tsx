@@ -8,21 +8,26 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import Link from "next/link";
-
-const assets = [
-  { id: "1", tag: "REI-001", name: "Servidor Dell PowerEdge R750", category: "TI / Infraestrutura", status: "Em Uso", value: "R$ 45.000,00" },
-  { id: "2", tag: "REI-002", name: "Herman Miller Aeron Chair", category: "Mobiliário", status: "Ativo", value: "R$ 12.500,00" },
-  { id: "3", tag: "REI-003", name: "MacBook Pro M3 Max", category: "TI / Dispositivos", status: "Em Manutenção", value: "R$ 32.000,00" },
-  { id: "4", tag: "REI-004", name: "Sistema de Som B&O Beolab", category: "Multimídia", status: "Ativo", value: "R$ 18.200,00" },
-];
+import prisma from "@/lib/prisma";
 
 const statusStyles: Record<string, string> = {
-  "Ativo": "bg-emerald-500/15 text-emerald-400 border-emerald-500/20",
-  "Em Uso": "bg-blue-500/15 text-blue-400 border-blue-500/20",
-  "Em Manutenção": "bg-amber-500/15 text-amber-400 border-amber-500/20",
+  "ACTIVE": "bg-emerald-500/15 text-emerald-400 border-emerald-500/20",
+  "IN_USE": "bg-blue-500/15 text-blue-400 border-blue-500/20",
+  "MAINTENANCE": "bg-amber-500/15 text-amber-400 border-amber-500/20",
 };
 
-export default function AssetsPage() {
+const statusLabels: Record<string, string> = {
+  "ACTIVE": "Ativo",
+  "IN_USE": "Em Uso",
+  "MAINTENANCE": "Em Manutenção",
+};
+
+export default async function AssetsPage() {
+  // Backend Specialist: Buscando dados REAIS do PostgreSQL/Supabase via Prisma
+  const assets = await prisma.asset.findMany({
+    orderBy: { tagNumber: 'asc' }
+  });
+
   return (
     <Shell>
       <div className="space-y-6">
@@ -30,7 +35,7 @@ export default function AssetsPage() {
         <div className="animate-in flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
           <div>
             <h2 className="text-2xl lg:text-3xl font-black text-foreground tracking-tight">Patrimônios</h2>
-            <p className="text-muted-foreground text-sm mt-1">Controle completo de todos os bens do Reino.</p>
+            <p className="text-muted-foreground text-sm mt-1">Dados validados direto do Banco de Dados Real.</p>
           </div>
           <div className="flex gap-3">
             <button className="flex items-center gap-2 px-4 py-2.5 border border-secondary/30 text-secondary rounded-xl text-sm font-semibold hover:bg-secondary/10 transition-all">
@@ -76,7 +81,7 @@ export default function AssetsPage() {
                   <tr key={asset.id} className="hover:bg-muted/20 transition-colors group">
                     <td className="px-6 py-4">
                       <span className="font-mono text-xs font-bold text-secondary bg-secondary/10 border border-secondary/15 px-2.5 py-1 rounded-md">
-                        {asset.tag}
+                        {asset.tagNumber}
                       </span>
                     </td>
                     <td className="px-6 py-4">
@@ -85,10 +90,12 @@ export default function AssetsPage() {
                     </td>
                     <td className="px-6 py-4 text-center">
                       <span className={`text-[10px] font-bold uppercase px-3 py-1.5 rounded-full border ${statusStyles[asset.status] || "bg-muted text-muted-foreground border-border"}`}>
-                        {asset.status}
+                        {statusLabels[asset.status] || asset.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm font-bold text-foreground">{asset.value}</td>
+                    <td className="px-6 py-4 text-sm font-bold text-foreground">
+                      {asset.currentValue ? `R$ ${asset.currentValue.toString().replace('.', ',')}` : '-'}
+                    </td>
                     <td className="px-6 py-4 text-center">
                       <Link href={`/assets/${asset.id}`} className="inline-flex p-2 bg-secondary/10 hover:bg-secondary rounded-lg text-secondary hover:text-background transition-all">
                         <ChevronRight className="w-4 h-4" />
@@ -106,7 +113,7 @@ export default function AssetsPage() {
               <Link key={asset.id} href={`/assets/${asset.id}`} className="block p-4 hover:bg-muted/20 transition-colors">
                 <div className="flex justify-between items-start">
                   <div>
-                    <span className="font-mono text-[10px] font-bold text-secondary bg-secondary/10 border border-secondary/15 px-2 py-0.5 rounded">{asset.tag}</span>
+                    <span className="font-mono text-[10px] font-bold text-secondary bg-secondary/10 border border-secondary/15 px-2 py-0.5 rounded">{asset.tagNumber}</span>
                     <p className="text-sm font-bold text-foreground mt-2">{asset.name}</p>
                     <p className="text-[10px] text-muted-foreground uppercase tracking-wider mt-1">{asset.category}</p>
                   </div>
@@ -114,9 +121,11 @@ export default function AssetsPage() {
                 </div>
                 <div className="flex items-center justify-between mt-3">
                   <span className={`text-[10px] font-bold uppercase px-2.5 py-1 rounded-full border ${statusStyles[asset.status] || ""}`}>
-                    {asset.status}
+                    {statusLabels[asset.status] || asset.status}
                   </span>
-                  <span className="text-sm font-bold text-secondary">{asset.value}</span>
+                  <span className="text-sm font-bold text-secondary">
+                    {asset.currentValue ? `R$ ${asset.currentValue.toString().replace('.', ',')}` : '-'}
+                  </span>
                 </div>
               </Link>
             ))}
@@ -125,7 +134,7 @@ export default function AssetsPage() {
           {/* Footer */}
           <div className="px-6 py-4 bg-muted/20 border-t border-border flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-muted-foreground">
             <span className="flex items-center gap-1.5">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> 2.842 itens protegidos
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> Banco Real Conectado: {assets.length} registros
             </span>
             <div className="flex gap-2">
               <button className="px-3 py-1.5 border border-border rounded-lg hover:bg-muted transition-colors">Anterior</button>
