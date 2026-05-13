@@ -1,18 +1,15 @@
 "use client";
 
 import Shell from "@/components/layout/Shell";
-import { 
-  ArrowLeft, 
-  Edit3, 
-  History, 
-  FileText, 
+import {
+  ArrowLeft,
+  Edit3,
+  History,
+  FileText,
   Info,
-  Calendar,
-  User,
   ShieldCheck,
   Download,
   Clock,
-  Eye,
   Plus,
   Star
 } from "lucide-react";
@@ -24,144 +21,167 @@ export default function AssetDetailPage() {
 
   return (
     <Shell>
-      <div className="space-y-8">
-        {/* Royal Sub-Header */}
-        <div className="flex justify-between items-center border-b-4 border-secondary/20 pb-8">
-          <div className="flex items-center gap-6">
-            <Link href="/assets" className="p-3 bg-secondary/10 hover:bg-secondary rounded-2xl text-secondary hover:text-primary transition-all shadow-sm">
-              <ArrowLeft className="w-6 h-6" />
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="animate-in flex flex-col sm:flex-row justify-between items-start gap-4">
+          <div className="flex items-center gap-4">
+            <Link href="/assets" className="p-2.5 bg-card border border-border hover:bg-secondary/10 hover:border-secondary/20 rounded-xl transition-all">
+              <ArrowLeft className="w-5 h-5 text-muted-foreground" />
             </Link>
             <div>
-              <div className="flex items-center gap-3">
-                <span className="text-xs font-black text-primary uppercase tracking-widest bg-secondary px-3 py-1 rounded-lg shadow-md">REI-001</span>
-                <span className="text-xs font-black text-emerald-700 bg-emerald-100 border-2 border-emerald-200 px-3 py-1 rounded-full uppercase tracking-widest">Soberania Ativa</span>
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-xs font-bold text-secondary bg-secondary/10 border border-secondary/15 px-2.5 py-1 rounded-md">REI-001</span>
+                <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/15 border border-emerald-500/20 px-2.5 py-1 rounded-full uppercase">Ativo</span>
               </div>
-              <h2 className="text-3xl font-black text-primary mt-2">Servidor Imperial Dell PowerEdge R750</h2>
+              <h2 className="text-xl lg:text-2xl font-black text-foreground mt-2">Servidor Dell PowerEdge R750</h2>
             </div>
           </div>
-          <div className="flex gap-4">
-            <button className="flex items-center gap-2 px-6 py-3 border-2 border-secondary text-secondary rounded-2xl text-sm font-black uppercase hover:bg-secondary hover:text-primary transition-all shadow-lg">
-              <Edit3 className="w-4 h-4" /> Editar Atributos
+          <div className="flex gap-3 ml-12 sm:ml-0">
+            <button className="flex items-center gap-2 px-4 py-2 border border-secondary/30 text-secondary rounded-xl text-sm font-semibold hover:bg-secondary/10 transition-all">
+              <Edit3 className="w-4 h-4" /> Editar
             </button>
-            <button className="flex items-center gap-2 px-8 py-3 bg-primary text-white rounded-2xl text-sm font-black uppercase hover:bg-primary/90 transition-all shadow-xl border-b-4 border-secondary">
-              <Star className="w-4 h-4 text-secondary" /> Marcar como Favorito
+            <button className="flex items-center gap-2 px-4 py-2 bg-secondary text-background rounded-xl text-sm font-bold hover:bg-secondary/90 transition-all shadow-lg shadow-secondary/20">
+              <Star className="w-4 h-4" /> Favoritar
             </button>
           </div>
         </div>
 
-        {/* Custom Tabs - Royal Style */}
-        <div className="flex gap-12 border-b-2 border-secondary/10">
+        {/* Tabs */}
+        <div className="animate-in animate-in-delay-1 flex gap-6 border-b border-border overflow-x-auto">
           {[
-            { id: "info", label: "Memorial Descritivo", icon: Info },
-            { id: "docs", label: "Arquivo de Evidências", icon: FileText },
-            { id: "history", label: "Crônica de Auditoria", icon: History },
+            { id: "info", label: "Detalhes", icon: Info },
+            { id: "docs", label: "Documentos", icon: FileText },
+            { id: "history", label: "Histórico", icon: History },
           ].map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`pb-4 text-sm font-black uppercase tracking-widest transition-all relative ${
-                activeTab === tab.id ? "text-primary" : "text-primary/30 hover:text-primary"
+              className={`pb-3 text-sm font-semibold transition-all relative whitespace-nowrap flex items-center gap-2 ${
+                activeTab === tab.id ? "text-secondary" : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              <div className="flex items-center gap-2">
-                <tab.icon className={`w-5 h-5 ${activeTab === tab.id ? "text-secondary" : "text-primary/20"}`} />
-                {tab.label}
-              </div>
+              <tab.icon className="w-4 h-4" />
+              {tab.label}
               {activeTab === tab.id && (
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-secondary rounded-full shadow-[0_0_10px_rgba(217,119,6,0.5)]"></div>
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-secondary rounded-full shadow-[0_0_8px_hsla(45,93%,47%,0.4)]" />
               )}
             </button>
           ))}
         </div>
 
-        {/* Content Area */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-          <div className="lg:col-span-2 space-y-10">
+        {/* Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-6">
             {activeTab === "info" && (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="bg-white border-2 border-secondary/10 rounded-[2.5rem] p-8 space-y-6 shadow-xl relative overflow-hidden">
-                    <h3 className="text-xs font-black uppercase tracking-[0.2em] text-secondary border-b-2 border-secondary/10 pb-4">Especificações do Acervo</h3>
-                    <div className="space-y-4">
-                      <DetailRow label="Cédula de Identidade" value="REI-DELL-XJ9283" />
-                      <DetailRow label="Fabricante Imperial" value="Dell / PowerEdge" />
-                      <DetailRow label="Categoria do Bem" value="TI / Infraestrutura" />
-                      <DetailRow label="Data de Ingresso" value="12/03/2024" />
-                    </div>
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-secondary/5 rounded-full -mr-12 -mt-12 blur-2xl"></div>
-                  </div>
-                  
-                  <div className="bg-white border-2 border-secondary/10 rounded-[2.5rem] p-8 space-y-6 shadow-xl relative overflow-hidden">
-                    <h3 className="text-xs font-black uppercase tracking-[0.2em] text-secondary border-b-2 border-secondary/10 pb-4">Custódia & Localização</h3>
-                    <div className="space-y-4">
-                      <DetailRow label="Guardião Responsável" value="Carlos Silva" />
-                      <DetailRow label="Sede de Alocação" value="Matriz Imperial" />
-                      <DetailRow label="Câmara / Sala" value="Câmara de Dados 01" />
-                      <DetailRow label="Posicionamento" value="Rack A3" />
-                    </div>
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full -mr-12 -mt-12 blur-2xl"></div>
-                  </div>
+                <div className="animate-in grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <DetailCard title="Identificação">
+                    <DetailRow label="Número de Série" value="DELL-R750-XJ9283" />
+                    <DetailRow label="Marca / Modelo" value="Dell / PowerEdge R750" />
+                    <DetailRow label="Categoria" value="TI / Infraestrutura" />
+                    <DetailRow label="Data de Compra" value="12/03/2024" />
+                  </DetailCard>
+                  <DetailCard title="Localização">
+                    <DetailRow label="Responsável" value="Carlos Silva" />
+                    <DetailRow label="Unidade" value="Matriz" />
+                    <DetailRow label="Setor" value="Data Center 01" />
+                    <DetailRow label="Posição" value="Rack A3" />
+                  </DetailCard>
                 </div>
 
-                <div className="bg-white border-2 border-secondary/10 rounded-[2.5rem] p-8 shadow-xl">
-                  <h3 className="text-xs font-black uppercase tracking-[0.2em] text-secondary border-b-2 border-secondary/10 pb-4 mb-6">Memorial Detalhado</h3>
-                  <p className="text-lg font-medium text-primary/70 leading-relaxed italic border-l-4 border-secondary pl-6">
-                    Bem patrimonial de alta importância estratégica, dotado de processadores de última geração e redundância total de energia. 
-                    Constitui a base da soberania digital do Reino para o processamento de dados fiscais e operacionais.
+                <div className="animate-in animate-in-delay-1 bg-card border border-border rounded-2xl p-6">
+                  <h3 className="text-[10px] font-bold uppercase tracking-widest text-secondary mb-4">Descrição</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed border-l-2 border-secondary/30 pl-4">
+                    Servidor de alta performance com processadores Intel Xeon de 3ª geração, 256GB RAM DDR4, 4TB SSD NVMe.
+                    Utilizado para hospedagem do banco de dados principal de produção.
                   </p>
                 </div>
               </>
             )}
 
             {activeTab === "docs" && (
-              <div className="space-y-6">
+              <div className="animate-in space-y-4">
                 <div className="flex justify-between items-center">
-                  <h3 className="text-2xl font-black text-primary">Arquivo de Evidências</h3>
-                  <button className="flex items-center gap-2 px-5 py-2 bg-secondary text-primary rounded-xl text-xs font-black uppercase shadow-lg">
-                    <Plus className="w-4 h-4" /> Novo Aditivo
+                  <h3 className="text-lg font-bold text-foreground">Documentos</h3>
+                  <button className="flex items-center gap-2 px-3 py-1.5 bg-secondary/10 text-secondary rounded-lg text-xs font-bold">
+                    <Plus className="w-3 h-3" /> Adicionar
                   </button>
                 </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <DocumentCard name="Certificado Fiscal.pdf" type="FISCAL" size="1.2 MB" date="12/03/24" />
-                  <DocumentCard name="Manual de Operação.pdf" type="TÉCNICO" size="4.5 MB" date="13/03/24" />
-                  <DocumentCard name="Garantia Vitalícia.pdf" type="PROTEÇÃO" size="840 KB" date="15/03/24" />
-                </div>
+                {[
+                  { name: "Nota Fiscal.pdf", type: "Fiscal", size: "1.2 MB" },
+                  { name: "Manual Técnico.pdf", type: "Técnico", size: "4.5 MB" },
+                  { name: "Garantia Estendida.pdf", type: "Garantia", size: "840 KB" },
+                ].map((doc, i) => (
+                  <div key={i} className="bg-card border border-border p-4 rounded-xl flex items-center gap-4 group card-hover">
+                    <div className="w-10 h-10 bg-secondary/10 rounded-xl flex items-center justify-center">
+                      <FileText className="w-5 h-5 text-secondary" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-bold text-foreground truncate">{doc.name}</p>
+                      <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{doc.type} • {doc.size}</p>
+                    </div>
+                    <button className="p-2 opacity-0 group-hover:opacity-100 bg-muted hover:bg-secondary rounded-lg text-muted-foreground hover:text-background transition-all">
+                      <Download className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
               </div>
             )}
 
             {activeTab === "history" && (
-              <div className="bg-white border-2 border-secondary/10 rounded-[2.5rem] p-10 shadow-2xl">
-                <h3 className="text-2xl font-black text-primary mb-10">Crônica de Auditoria</h3>
-                <div className="space-y-12 relative">
-                  <div className="absolute left-[15px] top-4 bottom-4 w-1 bg-secondary/20 rounded-full"></div>
-                  <TimelineItem date="22/04/2024" user="Sistema Central" action="Ato de Movimentação" desc="O item foi realocado para a Câmara de Dados 01 após inspeção técnica." />
-                  <TimelineItem date="15/03/2024" user="Carlos Silva" action="Adição de Memória" desc="Inserção de manuais técnicos e atualização de categoria para 'Estratégico'." />
-                  <TimelineItem date="12/03/2024" user="Chancelaria" action="Ingresso no Reino" desc="Registro inicial do bem patrimonial após recebimento da chancelaria fiscal." />
+              <div className="animate-in bg-card border border-border rounded-2xl p-6">
+                <h3 className="text-lg font-bold text-foreground mb-6">Linha do Tempo</h3>
+                <div className="space-y-8 relative">
+                  <div className="absolute left-[11px] top-2 bottom-2 w-px bg-border" />
+                  {[
+                    { date: "22/04/2024", user: "Sistema", action: "Movimentação", desc: "Realocado para Data Center 01." },
+                    { date: "15/03/2024", user: "Carlos Silva", action: "Atualização", desc: "Manual técnico adicionado." },
+                    { date: "12/03/2024", user: "Logística", action: "Criação", desc: "Registrado no sistema." },
+                  ].map((item, i) => (
+                    <div key={i} className="relative pl-8">
+                      <div className="absolute left-0 top-0.5 w-6 h-6 bg-card border-2 border-secondary rounded-lg flex items-center justify-center z-10">
+                        <Clock className="w-3 h-3 text-secondary" />
+                      </div>
+                      <p className="text-[10px] font-bold text-secondary uppercase tracking-widest">{item.date}</p>
+                      <p className="text-sm font-bold text-foreground mt-1">{item.action}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">Por: {item.user}</p>
+                      <p className="text-xs text-muted-foreground mt-2 border-l-2 border-border pl-3">{item.desc}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
           </div>
 
-          {/* Right Panel - Royal Life Cycle */}
-          <div className="space-y-8">
-            <div className="bg-primary text-white border-b-8 border-secondary rounded-[3rem] p-8 shadow-2xl relative overflow-hidden">
-              <h3 className="text-xs font-black uppercase tracking-[0.2em] text-secondary mb-8">Ciclo de Soberania</h3>
-              <div className="space-y-6 relative z-10">
-                <StatusStep label="Ingresso" date="12/03/24" active />
-                <StatusStep label="Consagração" date="15/03/24" active />
-                <StatusStep label="Auditoria Q1" date="22/04/24" active />
-                <StatusStep label="Garantia" date="12/03/27" />
+          {/* Side Panel */}
+          <div className="space-y-4">
+            <div className="animate-in animate-in-delay-2 bg-primary rounded-2xl p-6 border-b-4 border-secondary relative overflow-hidden">
+              <h3 className="text-[10px] font-bold uppercase tracking-widest text-secondary mb-6">Ciclo de Vida</h3>
+              <div className="space-y-4 relative z-10">
+                {[
+                  { label: "Aquisição", date: "12/03/24", done: true },
+                  { label: "Implantação", date: "15/03/24", done: true },
+                  { label: "Auditoria", date: "22/04/24", done: true },
+                  { label: "Garantia", date: "12/03/27", done: false },
+                ].map((step, i) => (
+                  <div key={i} className="flex justify-between items-center text-xs">
+                    <div className="flex items-center gap-2.5">
+                      <div className={`w-2.5 h-2.5 rounded-full ${step.done ? "bg-secondary shadow-[0_0_8px_hsla(45,93%,47%,0.5)]" : "bg-white/20"}`} />
+                      <span className={step.done ? "text-secondary font-bold" : "text-white/40"}>{step.label}</span>
+                    </div>
+                    <span className="text-white/40 font-mono">{step.date}</span>
+                  </div>
+                ))}
               </div>
-              <div className="absolute bottom-0 right-0 w-32 h-32 bg-white/5 rounded-full -mb-16 -mr-16 blur-3xl"></div>
+              <div className="absolute bottom-0 right-0 w-24 h-24 bg-secondary/10 rounded-full -mb-12 -mr-12 blur-2xl" />
             </div>
 
-            <div className="bg-white border-2 border-secondary/10 rounded-[2.5rem] p-8 shadow-xl text-center">
-               <div className="w-20 h-20 bg-secondary/10 rounded-3xl flex items-center justify-center text-secondary mx-auto mb-6 shadow-inner">
-                  <ShieldCheck className="w-10 h-10" />
-               </div>
-               <h4 className="text-lg font-black text-primary uppercase tracking-tight">Bem Protegido</h4>
-               <p className="text-xs text-primary/40 font-bold mt-2 leading-relaxed">Este item está sob vigilância constante e auditoria automatizada do Reino.</p>
+            <div className="animate-in animate-in-delay-3 bg-card border border-border rounded-2xl p-6 text-center">
+              <div className="w-14 h-14 bg-secondary/10 rounded-2xl flex items-center justify-center text-secondary mx-auto mb-4">
+                <ShieldCheck className="w-7 h-7" />
+              </div>
+              <h4 className="text-sm font-bold text-foreground">Bem Protegido</h4>
+              <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">Sob vigilância e auditoria automatizada.</p>
             </div>
           </div>
         </div>
@@ -170,56 +190,20 @@ export default function AssetDetailPage() {
   );
 }
 
-function DetailRow({ label, value }: { label: string, value: string }) {
+function DetailCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="flex justify-between items-center text-sm border-b border-secondary/10 pb-2">
-      <span className="font-bold text-primary/40 uppercase tracking-widest text-[10px]">{label}</span>
-      <span className="font-black text-primary">{value}</span>
+    <div className="bg-card border border-border rounded-2xl p-6 space-y-4">
+      <h3 className="text-[10px] font-bold uppercase tracking-widest text-secondary pb-3 border-b border-border">{title}</h3>
+      <div className="space-y-3">{children}</div>
     </div>
   );
 }
 
-function DocumentCard({ name, type, size, date }: { name: string, type: string, size: string, date: string }) {
+function DetailRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="bg-white border-2 border-secondary/10 p-5 rounded-3xl flex items-center gap-5 group hover:border-secondary transition-all shadow-lg">
-      <div className="w-12 h-12 bg-secondary/10 rounded-2xl flex items-center justify-center text-secondary shadow-inner">
-        <FileText className="w-6 h-6" />
-      </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-black text-primary truncate">{name}</p>
-        <p className="text-[10px] font-bold text-primary/40 uppercase tracking-widest">{type} • {size}</p>
-      </div>
-      <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-all">
-        <button className="p-2 bg-secondary/10 hover:bg-secondary rounded-xl text-secondary hover:text-primary transition-all"><Download className="w-4 h-4" /></button>
-      </div>
-    </div>
-  );
-}
-
-function TimelineItem({ date, user, action, desc }: { date: string, user: string, action: string, desc: string }) {
-  return (
-    <div className="relative pl-12">
-      <div className="absolute left-0 top-1.5 w-8 h-8 bg-white border-2 border-secondary rounded-xl flex items-center justify-center z-10 shadow-lg">
-        <Clock className="w-4 h-4 text-secondary" />
-      </div>
-      <div>
-        <p className="text-[10px] font-black text-secondary uppercase tracking-[0.2em]">{date}</p>
-        <p className="text-xl font-black text-primary mt-1">{action}</p>
-        <p className="text-xs font-bold text-primary/40 uppercase mt-1">Por: {user}</p>
-        <p className="text-sm font-medium text-primary/60 mt-3 leading-relaxed border-l-2 border-secondary/20 pl-4 italic">{desc}</p>
-      </div>
-    </div>
-  );
-}
-
-function StatusStep({ label, date, active = false }: { label: string, date: string, active?: boolean }) {
-  return (
-    <div className="flex justify-between items-center text-xs font-bold">
-      <div className="flex items-center gap-3">
-        <div className={`w-3 h-3 rounded-full border-2 ${active ? "bg-secondary border-white shadow-[0_0_10px_rgba(255,255,255,0.5)]" : "bg-primary border-secondary"}`}></div>
-        <span className={active ? "text-secondary font-black" : "text-white/40"}>{label}</span>
-      </div>
-      <span className="text-white/40">{date}</span>
+    <div className="flex justify-between items-center text-sm">
+      <span className="text-muted-foreground text-xs">{label}</span>
+      <span className="font-semibold text-foreground">{value}</span>
     </div>
   );
 }
