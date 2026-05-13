@@ -62,6 +62,11 @@ export async function deleteAsset(id: string) {
   revalidatePath("/assets");
 }
 
+export async function deleteAllAssets() {
+  await prisma.asset.deleteMany({});
+  revalidatePath("/assets");
+}
+
 export async function importAssets(assetsData: any[]) {
   const companyId = await getDefaultCompanyId();
   if (!companyId) throw new Error("No company found.");

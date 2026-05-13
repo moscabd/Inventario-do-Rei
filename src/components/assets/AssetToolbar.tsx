@@ -2,8 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { Plus, Download, Upload, X, Loader2 } from "lucide-react";
-import { createAsset, importAssets } from "@/app/actions/asset";
+import { Plus, Download, Upload, X, Loader2, Trash2 } from "lucide-react";
+import { createAsset, importAssets, deleteAllAssets } from "@/app/actions/asset";
 
 export default function AssetToolbar({ assets }: { assets: any[] }) {
   const [isNewModalOpen, setIsNewModalOpen] = useState(false);
@@ -79,9 +79,32 @@ export default function AssetToolbar({ assets }: { assets: any[] }) {
     }
   };
 
+  // Excluir Todos
+  const handleDeleteAll = async () => {
+    if (confirm("ATENÇÃO: Você tem certeza que deseja excluir TODOS os patrimônios? Esta ação não pode ser desfeita.")) {
+      setLoading(true);
+      try {
+        await deleteAllAssets();
+        alert("Todos os patrimônios foram excluídos.");
+      } catch(e) {
+        alert("Erro ao excluir.");
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
   return (
     <>
       <div className="flex flex-wrap gap-3">
+        <button 
+          onClick={handleDeleteAll}
+          disabled={loading || assets.length === 0}
+          className="flex items-center gap-2 px-4 py-2.5 border border-red-500/30 text-red-400 rounded-xl text-sm font-semibold hover:bg-red-500/10 transition-all disabled:opacity-50"
+          title="Excluir Todos"
+        >
+          <Trash2 className="w-4 h-4" />
+        </button>
         <button 
           onClick={() => setIsImportModalOpen(true)}
           className="flex items-center gap-2 px-4 py-2.5 border border-secondary/30 text-secondary rounded-xl text-sm font-semibold hover:bg-secondary/10 transition-all"

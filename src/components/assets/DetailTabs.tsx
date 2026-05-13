@@ -2,18 +2,33 @@
 
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { Info, FileText, History, Clock, Download, Plus, ShieldCheck, Edit3, X, Loader2 } from "lucide-react";
-import { updateAsset } from "@/app/actions/asset";
+import { useRouter } from "next/navigation";
+import { Info, FileText, History, Clock, Download, Plus, ShieldCheck, Edit3, X, Loader2, Trash2 } from "lucide-react";
+import { updateAsset, deleteAsset } from "@/app/actions/asset";
 
 export default function DetailTabs({ asset }: { asset: any }) {
   const [activeTab, setActiveTab] = useState("info");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const handleDelete = async () => {
+    if (confirm("ATENÇÃO: Deseja realmente excluir este patrimônio?")) {
+      setLoading(true);
+      try {
+        await deleteAsset(asset.id);
+        router.push("/assets");
+      } catch (e) {
+        alert("Erro ao excluir.");
+        setLoading(false);
+      }
+    }
+  };
 
   const statusLabels: Record<string, string> = {
     "ACTIVE": "Ativo",
@@ -38,6 +53,14 @@ export default function DetailTabs({ asset }: { asset: any }) {
           </div>
         </div>
         <div className="flex gap-3 ml-12 sm:ml-0">
+          <button 
+            onClick={handleDelete}
+            disabled={loading}
+            className="flex items-center gap-2 px-3 py-2 border border-red-500/30 text-red-400 rounded-xl text-sm font-semibold hover:bg-red-500/10 transition-all disabled:opacity-50"
+            title="Excluir"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
           <button onClick={() => setIsEditModalOpen(true)} className="flex items-center gap-2 px-4 py-2 border border-secondary/30 text-secondary rounded-xl text-sm font-semibold hover:bg-secondary/10 transition-all">
             <Edit3 className="w-4 h-4" /> Editar
           </button>
